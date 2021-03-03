@@ -14,10 +14,41 @@ const App = () => {
       .then((data) => setUsers(data))
   }, [])
 
-  console.log(users);
+  const { isOpen, getMenuProps, getInputProps, getComboboxProps, highlightedIndex, getItemProps } = useCombobox({
+    items:inputItems,
+    onInputValueChange: ({inputValue}) => {
+      setInputItems(
+        users.filter((item) => item.name.toLowerCase().startsWith(inputValue.toLowerCase()))
+      )
+    }
+  })
   return (
     <div className='App'>
-      Hello World
+      <h2>Current User: {singleUser}</h2>
+      <div {...getComboboxProps()}>
+      <Input {...getInputProps()}
+      placeholder='Search'
+      enterbutton='Search'
+      size='large'
+      />
+      </div>
+      <ul {...getMenuProps()}>
+        {isOpen &&
+          inputItems.map((item, index) => (
+            <span
+            key={item.id}
+            {...getItemProps({item, index})}
+            onClick={() => setSingleUser(item.name)}>
+
+            <li style={highlightedIndex === index ? {background: '#ede'}: {}}
+            >
+              <h4>{item.name}</h4>
+            </li>
+
+            </span>
+          ))
+        }
+      </ul>
     </div>
   );
 
